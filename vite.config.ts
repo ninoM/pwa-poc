@@ -10,11 +10,6 @@ export default defineConfig({
       registerType: 'prompt',
       injectRegister: false,
 
-      pwaAssets: {
-        disabled: false,
-        config: true,
-      },
-
       manifest: {
         name: 'Retail Tasker Client',
         short_name: 'rtk-client',
@@ -23,9 +18,8 @@ export default defineConfig({
       },
 
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
-        cleanupOutdatedCaches: true,
         clientsClaim: true,
+        skipWaiting: true,
         runtimeCaching: [
           {
             urlPattern: ({ url }) => {
