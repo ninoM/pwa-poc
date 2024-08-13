@@ -22,27 +22,6 @@ export default defineConfig({
         theme_color: '#ffffff',
       },
 
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
-        cleanupOutdatedCaches: true,
-        clientsClaim: true,
-        runtimeCaching: [
-          {
-            urlPattern: ({ url }) => {
-              return url.pathname.startsWith('/rest/v1/survey');
-            },
-            handler: 'NetworkFirst',
-            method: 'GET',
-            options: {
-              cacheName: 'survey-api-cache',
-              cacheableResponse: {
-                statuses: [0, 200],
-              },
-            },
-          },
-        ],
-      },
-
       devOptions: {
         enabled: true,
         navigateFallback: 'index.html',
