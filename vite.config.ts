@@ -22,6 +22,29 @@ export default defineConfig({
         theme_color: '#ffffff',
       },
 
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => {
+              return url.pathname.startsWith('/rest/v1/survey');
+            },
+            method: 'POST',
+            handler: 'NetworkOnly',
+            options: {
+              backgroundSync: {
+                name: 'survey-api-background-sync',
+                options: {
+                  maxRetentionTime: 60 * 60,
+                },
+              },
+            },
+          },
+        ],
+      },
+
       devOptions: {
         enabled: true,
         navigateFallback: 'index.html',

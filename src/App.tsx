@@ -1,61 +1,19 @@
 import React from 'react';
 import { InstallPWAButton } from './install-button';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { supabase } from './lib/supabase';
+import { useMutation } from '@tanstack/react-query';
 import { Survey, surveyKeys } from './lib/types';
-import { v4 as uuidv4 } from 'uuid';
+
+import { useSurveys } from './lib/api/hooks/useSurveys';
 
 function App() {
-  const queryClient = useQueryClient();
+  const { data: surveys } = useSurveys();
 
-  const { data: surveys } = useQuery<Survey[] | undefined>({
-    queryKey: surveyKeys.all(),
-    queryFn: async () => {
-      return supabase
-        .from('survey')
-        .select()
-        .then(({ data }) => {
-          return data as Survey[];
-        });
-    },
-  });
-
-  const { mutate: createSurvey, isPaused } = useMutation({
+  const { mutate: createSurvey, isPaused } = useMutation<
+    Survey,
+    Error,
+    Omit<Survey, 'id'>
+  >({
     mutationKey: surveyKeys.add(),
-    mutationFn: async ({ answer, name }: Omit<Survey, 'id'>) => {
-      await supabase.from('survey').insert([{ name, answer }]);
-    },
-    onMutate: async ({ answer, name }) => {
-      await queryClient.cancelQueries({ queryKey: surveyKeys.all() });
-
-      const survey = { id: uuidv4(), name, answer };
-
-      queryClient.setQueryData<Survey[]>(surveyKeys.all(), (old) => {
-        const newSurvey: Survey = { id: uuidv4(), name, answer };
-        return old ? [...old, newSurvey] : [newSurvey];
-      });
-
-      return { survey };
-    },
-    onSuccess: (result, _, context) => {
-      queryClient.setQueryData<Survey[] | undefined>(
-        surveyKeys.all(),
-        (old) =>
-          old?.map((survey) =>
-            survey.id === context.survey.id ? result : survey
-          ) as Survey[] | undefined
-      );
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: surveyKeys.all(),
-      });
-    },
-    onError: (_, ___, context) => {
-      queryClient.setQueryData<Survey[] | undefined>(surveyKeys.all(), (old) =>
-        old?.filter((survey) => survey.id !== context?.survey.id)
-      );
-    },
   });
 
   const [isLoading, setIsLoading] = React.useState(false);
