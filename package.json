@@ -10,10 +10,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.45.1",
+    "@tanstack/query-async-storage-persister": "5.51.21",
+    "@tanstack/query-sync-storage-persister": "5.51.21",
+    "@tanstack/react-query": "5.51.23",
+    "@tanstack/react-query-devtools": "5.51.23",
+    "@tanstack/react-query-persist-client": "5.51.23",
+    "@types/uuid": "^10.0.0",
     "dexie": "^4.0.8",
     "dexie-react-hooks": "^1.1.7",
+    "idb-keyval": "^6.2.1",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.1",
